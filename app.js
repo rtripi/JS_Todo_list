@@ -42,6 +42,15 @@ const deleteCheck = (e) => {
   //delete
 
   if (item.classList[0] === "trash-btn") {
+    const todo = item.parentElement;
+    todo.remove();
+  }
+
+  //check
+
+  if (item.classList[0] === "complete-btn") {
+    const todo = item.parentElement;
+    todo.classList.toggle("completed");
   }
 };
 
