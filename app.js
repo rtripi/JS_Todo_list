@@ -38,6 +38,34 @@ const addTodo = (event) => {
   todoList.appendChild(todoDiv);
   //Clear todo input value
   todoInput.value = "";
+  todoInput.focus();
+  console.log(filterOption.value);
+};
+
+const filterTodoList = () => {
+  const todos = todoList.childNodes;
+
+  todos.forEach((todo) => {
+    switch (filterOption.value) {
+      case "all":
+        todo.style.display = "flex";
+        break;
+      case "completed":
+        if (todo.classList.contains("completed")) {
+          todo.style.display = "flex";
+        } else {
+          todo.style.display = "none";
+        }
+        break;
+      case "uncompleted":
+        if (!todo.classList.contains("completed")) {
+          todo.style.display = "flex";
+        } else {
+          todo.style.display = "none";
+        }
+        break;
+    }
+  });
 };
 
 const deleteCheck = (e) => {
@@ -58,33 +86,8 @@ const deleteCheck = (e) => {
   if (item.classList[0] === "complete-btn") {
     const todo = item.parentElement;
     todo.classList.toggle("completed");
+    filterTodoList();
   }
-};
-
-const filterTodoList = (e) => {
-  const todos = todoList.childNodes;
-
-  todos.forEach((todo) => {
-    switch (e.target.value) {
-      case "all":
-        todo.style.display = "flex";
-        break;
-      case "completed":
-        if (todo.classList.contains("completed")) {
-          todo.style.display = "flex";
-        } else {
-          todo.style.display = "none";
-        }
-        break;
-      case "uncompleted":
-        if (!todo.classList.contains("completed")) {
-          todo.style.display = "flex";
-        } else {
-          todo.style.display = "none";
-        }
-        break;
-    }
-  });
 };
 
 function saveLocalTodos(todo) {
@@ -158,4 +161,6 @@ function removeLocalTodos(todo) {
 document.addEventListener("DOMContentLoaded", getTodos);
 todoButton.addEventListener("click", addTodo);
 todoList.addEventListener("click", deleteCheck);
-filterOption.addEventListener("click", filterTodoList);
+filterOption.addEventListener("change", filterTodoList);
+
+/*Hey guys, there is a small LOGIC GAP here, if you set the filter to "uncompleted" and check a new item, that item will not hide immediately, as it should.  The fix is simple: Inside function filterTodo(), instead of doing switch(e.target.value) you should do switch(filterOption.value). That will allow function filterTodo() to be called anytime, not only inside the 'click' event. Then you just add filterTodo(); as the last line inside the block "if (item.classList[0] === 'complete-btn')" inside function deleteCheck(). That will call funtion filterTodo() right after the item is checked, updating the screen!*/
